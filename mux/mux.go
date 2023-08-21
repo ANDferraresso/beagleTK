@@ -3,10 +3,10 @@ package mux
 import (
 	"database/sql"
 	"regexp"
+	"slices"
 	"strings"
 
 	"github.com/fasthttp/session/v2"
-	"golang.org/x/exp/slices"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/valyala/fasthttp"
