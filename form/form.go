@@ -9,8 +9,8 @@ import (
 
 	"github.com/valyala/fasthttp"
 
-	"github.com/ANDferraresso/beagleTK/orm"
-	"github.com/ANDferraresso/beagleTK/validator"
+	"beagleTK/orm"
+	"beagleTK/validator"
 )
 
 func (form *Form) SetupForm() {
