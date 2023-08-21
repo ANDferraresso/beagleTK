@@ -1,4 +1,4 @@
-module beagleTK
+module github.com/ANDferraresso/beagleTK
 
 go 1.21rc4
 
