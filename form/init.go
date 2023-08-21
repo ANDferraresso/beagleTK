@@ -1,7 +1,7 @@
 package form
 
 import (
-	"beagleTK/validator"
+	"github.com/ANDferraresso/beagleTK/validator"
 )
 
 type Field struct {

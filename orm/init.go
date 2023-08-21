@@ -7,7 +7,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"beagleTK/validator"
+	"github.com/ANDferraresso/beagleTK/validator"
 )
 
 type RowValues map[string]interface{}
