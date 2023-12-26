@@ -55,6 +55,7 @@ func IsIntInRange(value string, pars *[]string) bool {
         return true
     }
     return false
+}
 
 //
 func IsNegativeInt(value string, pars *[]string) bool {
