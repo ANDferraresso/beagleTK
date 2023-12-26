@@ -35,6 +35,27 @@ func IsInteger(value string, pars *[]string) bool {
     return false
 }
 
+
+// 
+func IsIntInRange(value string, pars *[]string) bool {
+	var v int64
+	var a int64
+    var b int64
+    var err error
+	v, err = strconv.ParseInt(*value, 10, 64)
+    if err != nil { 
+        return false 
+    }
+    a, err = strconv.ParseInt((*pars)[0], 10, 64)
+    if err != nil { 
+        return false 
+    }
+    b, err = strconv.ParseInt((*pars)[1], 10, 64)
+    if v >= a && v <= b {
+        return true
+    }
+    return false
+
 //
 func IsNegativeInt(value string, pars *[]string) bool {
     re := regexp.MustCompile("^\\-[1-9]+[0-9]*$") // -1, -10, -123, ...

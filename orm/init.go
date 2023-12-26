@@ -120,7 +120,7 @@ func elabConds(conds [][7]string) *CondSql {
 	return &cs
 }
 
-func manageDbmsError(dbRes *DbRes, debug string, err error, query string) *DbRes {
+func ManageDbmsError(dbRes *DbRes, debug string, err error, query string) *DbRes {
 	dbRes.Err = true
 	dbRes.Msg = "DBMS ERROR"
 	dbRes.Data = []RowValues{}
@@ -137,7 +137,7 @@ func manageDbmsError(dbRes *DbRes, debug string, err error, query string) *DbRes
 	return dbRes
 }
 
-func manageNullString(s string) sql.NullString {
+func ManageNullString(s string) sql.NullString {
 	if len(s) == 0 {
 		return sql.NullString{}
 	}
@@ -147,7 +147,7 @@ func manageNullString(s string) sql.NullString {
 	}
 }
 
-func manageDbResValue(rb sql.RawBytes) interface{} {
+func ManageDbResValue(rb sql.RawBytes) interface{} {
 	if rb == nil {
 		return nil
 	} else {
@@ -155,7 +155,7 @@ func manageDbResValue(rb sql.RawBytes) interface{} {
 	}
 }
 
-func manageValues(values *[]interface{}, v interface{}) {
+func ManageValues(values *[]interface{}, v interface{}) {
 	if (reflect.TypeOf(v)) == nil {
 		*values = append(*values, manageNullString(""))
 	} else {

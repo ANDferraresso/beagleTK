@@ -240,7 +240,7 @@ func (table *Table) Select(dbConn *sql.DB, debug string, countRows bool, extRefs
 		cnt = new(int64)
 		err := dbConn.QueryRow(query.String(), values...).Scan(&cnt)
 		if err != nil {
-			return manageDbmsError(&dbRes, debug, err, query.String())
+			return ManageDbmsError(&dbRes, debug, err, query.String())
 		} else {
 			vals := RowValues{}
 			raw := cnt.(int64)
@@ -251,7 +251,7 @@ func (table *Table) Select(dbConn *sql.DB, debug string, countRows bool, extRefs
 	} else {
 		rows, err := dbConn.Query(query.String(), values...)
 		if err != nil {
-			return manageDbmsError(&dbRes, debug, err, query.String())
+			return ManageDbmsError(&dbRes, debug, err, query.String())
 		} else {
 			// Ottieni tipo di dati delle colonne (columnTypes)
 			// columnType.Name() nome colonna
@@ -262,19 +262,19 @@ func (table *Table) Select(dbConn *sql.DB, debug string, countRows bool, extRefs
 			// }
 			_, err := rows.ColumnTypes()
 			if err != nil {
-				return manageDbmsError(&dbRes, debug, err, query.String())
+				return ManageDbmsError(&dbRes, debug, err, query.String())
 			} else {
 				// Ottieni un record alla volta.
 				defer rows.Close()
 				for rows.Next() {
 					err := rows.Scan(record...)
 					if err != nil {
-						return manageDbmsError(&dbRes, debug, err, query.String())
+						return ManageDbmsError(&dbRes, debug, err, query.String())
 					} else {
 						vals := RowValues{}
 						for i, k := range columns {
 							raw := *record[i].(*sql.RawBytes)
-							vals[k] = manageDbResValue(raw)
+							vals[k] = ManageDbResValue(raw)
 							i++
 						}
 						rv = append(rv, vals)
@@ -304,7 +304,7 @@ func (table *Table) InsertRow(dbConn *sql.DB, debug string, ps *map[string]inter
 
 		// Values
 		valuesSql.WriteString("?, ")
-		manageValues(&values, v)
+		ManageValues(&values, v)
 	}
 
 	query.WriteString("INSERT INTO `")
@@ -318,7 +318,7 @@ func (table *Table) InsertRow(dbConn *sql.DB, debug string, ps *map[string]inter
 	// Lancia query
 	res, err := dbConn.Exec(query.String(), values...)
 	if err != nil {
-		return manageDbmsError(&dbRes, debug, err, query.String())
+		return ManageDbmsError(&dbRes, debug, err, query.String())
 	} else {
 		lastInsertId, err := res.LastInsertId()
 		if err != nil {
@@ -353,7 +353,7 @@ func (table *Table) Update(dbConn *sql.DB, debug string, ps *map[string]interfac
 		columnsSql.WriteString("` = ?,")
 
 		// Values
-		manageValues(&values, v)
+		ManageValues(&values, v)
 	}
 
 	// WHERE (condizioni)
@@ -373,7 +373,7 @@ func (table *Table) Update(dbConn *sql.DB, debug string, ps *map[string]interfac
 	// Lancia query
 	res, err := dbConn.Exec(query.String(), values...)
 	if err != nil {
-		return manageDbmsError(&dbRes, debug, err, query.String())
+		return ManageDbmsError(&dbRes, debug, err, query.String())
 	} else {
 		rowsAffected, err := res.RowsAffected()
 		if err != nil {
@@ -409,7 +409,7 @@ func (table *Table) DeleteRows(dbConn *sql.DB, debug string, conds [][7]string) 
 	// Lancia query
 	res, err := dbConn.Exec(query.String(), values...)
 	if err != nil {
-		return manageDbmsError(&dbRes, debug, err, query.String())
+		return ManageDbmsError(&dbRes, debug, err, query.String())
 	} else {
 		rowsAffected, err := res.RowsAffected()
 		if err != nil {

@@ -165,7 +165,7 @@ func (form *Form) ValidateAll(ctx *fasthttp.RequestCtx) (bool, map[string]string
 
 		} else {
 			if !ctx.PostArgs().Has(form.Prefix + k) {
-				// Parametero non presente.
+				// Parametro non presente.
 				fValues[k] = ""
 				if !stringInSlice(k, form.DontValidate) {
 					wrongFields = append(wrongFields, k)
