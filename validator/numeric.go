@@ -42,6 +42,7 @@ func IsIntInRange(value string, pars *[]string) bool {
 	var a int64
     var b int64
     var err error
+    
 	v, err = strconv.ParseInt(*value, 10, 64)
     if err != nil { 
         return false 
