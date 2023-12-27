@@ -157,12 +157,12 @@ func ManageDbResValue(rb sql.RawBytes) interface{} {
 
 func ManageValues(values *[]interface{}, v interface{}) {
 	if (reflect.TypeOf(v)) == nil {
-		*values = append(*values, manageNullString(""))
+		*values = append(*values, ManageNullString(""))
 	} else {
 		t := v.(interface{})
 		switch t.(type) {
 		case nil:
-			*values = append(*values, manageNullString(""))
+			*values = append(*values, ManageNullString(""))
 		case bool:
 			if v.(bool) == true {
 				*values = append(*values, 1)
