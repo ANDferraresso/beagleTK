@@ -68,8 +68,13 @@ type TableTab struct {
 type DbRes struct {
 	Err     bool
 	Msg     string
-	hasData bool
 	Data    []RowValues
+}
+
+type OptRes struct {
+	Err     bool
+	Msg     string
+	Data    []map[string]string
 }
 
 func elabConds(conds [][7]string) *CondSql {
