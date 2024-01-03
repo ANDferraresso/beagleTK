@@ -33,9 +33,12 @@ func (table *Table) Select(dbConn *sql.DB, debug string, countRows bool, extRefs
 	if len(quickList) > 0 {
 		columns = append(columns, quickList...)
 	} else {
+		columns = append(columns, ColumnsOrder...)
+		/*
 		for _, v := range table.ColumnsOrder {
 			columns = append(columns, v)
 		}
+		*/
 	}
 
 	if countRows {
@@ -236,19 +239,16 @@ func (table *Table) Select(dbConn *sql.DB, debug string, countRows bool, extRefs
 
 	// Lancia query
 	if countRows {
-		var cnt interface{}
-		cnt = new(int64)
+		var cnt int64 = 0
 		err := dbConn.QueryRow(query.String(), values...).Scan(&cnt)
 		if err != nil {
 			return ManageDbmsError(&dbRes, debug, err, query.String())
 		} else {
 			vals := RowValues{}
-			raw := cnt.(int64)
-			raw = 111
-			vals["CNT"] = raw //string(raw)
+			vals["CNT"] = cnt //string(raw)
 			rv = append(rv, vals)
 		}
-	} else {
+	} else {  
 		rows, err := dbConn.Query(query.String(), values...)
 		if err != nil {
 			return ManageDbmsError(&dbRes, debug, err, query.String())
