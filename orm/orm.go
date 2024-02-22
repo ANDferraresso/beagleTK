@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
-)
+) 
 
 /*
 https://stackoverflow.com/questions/17845619/how-to-call-the-scan-variadic-function-using-reflection
@@ -19,7 +19,7 @@ https://github.com/go-sql-driver/mysql/issues/585
 */
 
 func (table *Table) Select(dbConn *sql.DB, debug string, countRows bool, extRefs bool, quickList []string,
-	conds [][7]string, order [][2]string, limit int, offset int) *DbRes {
+	conds [][7]string, order [][2]string, limit int64, offset int64) *DbRes {
 
 	dbRes := DbRes{Err: false, Msg: "", Data: []RowValues{}}
 
@@ -33,7 +33,7 @@ func (table *Table) Select(dbConn *sql.DB, debug string, countRows bool, extRefs
 	if len(quickList) > 0 {
 		columns = append(columns, quickList...)
 	} else {
-		columns = append(columns, ColumnsOrder...)
+		columns = append(columns, table.ColumnsOrder...)
 		/*
 		for _, v := range table.ColumnsOrder {
 			columns = append(columns, v)
@@ -110,14 +110,15 @@ func (table *Table) Select(dbConn *sql.DB, debug string, countRows bool, extRefs
 			query.WriteString(orderSql)
 			if limit > -1 {
 				query.WriteString(" LIMIT ")
-				query.WriteString(strconv.Itoa(offset))
+				query.WriteString(strconv.FormatInt(offset, 10))
 				query.WriteString(", ")
-				query.WriteString(strconv.Itoa(limit))
+				query.WriteString(strconv.FormatInt(limit, 10))
 			}
 
 		}
 
 		values = append(values, cs.Binds...)
+		fmt.Println("cs.Binds:", cs.Binds)
 	} else {
 		// extRefs = true
 		//
@@ -253,6 +254,8 @@ func (table *Table) Select(dbConn *sql.DB, debug string, countRows bool, extRefs
 		if err != nil {
 			return ManageDbmsError(&dbRes, debug, err, query.String())
 		} else {
+
+	     	fmt.Println(query.String(), values)
 			// Ottieni tipo di dati delle colonne (columnTypes)
 			// columnType.Name() nome colonna
 			// columnType.DatabaseTypeName() tipo di data (database)
@@ -367,10 +370,11 @@ func (table *Table) Update(dbConn *sql.DB, debug string, ps *map[string]interfac
 	query.WriteString(cs.Wquery)
 	query.WriteString(" ")
 	query.WriteString(cs.Hquery)
-
+    
 	values = append(values, cs.Binds...)
 
 	// Lancia query
+	fmt.Println(query.String(), values)
 	res, err := dbConn.Exec(query.String(), values...)
 	if err != nil {
 		return ManageDbmsError(&dbRes, debug, err, query.String())
@@ -385,6 +389,7 @@ func (table *Table) Update(dbConn *sql.DB, debug string, ps *map[string]interfac
 		dbRes = DbRes{Err: false, Msg: "", Data: []RowValues{map[string]interface{}{"rowsAffected": rowsAffected}}}
 	}
 
+    
 	return &dbRes
 }
 

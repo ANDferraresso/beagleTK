@@ -1,19 +1,23 @@
 package mux
 
 import (
+	"database/sql"
 	"regexp"
 	"slices"
 	"strings"
 
 	"github.com/fasthttp/session/v2"
+
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/valyala/fasthttp"
 )
 
-type BaseMux struct {
+type MySQLMux struct {
+	DbConn  *sql.DB
 	Session *session.Session
 }
 
-func (bm *BaseMux) Mux(ctx *fasthttp.RequestCtx, setting *map[string]string, routes *map[string]Route, urlDictio *map[string]map[string]string) {
+func (bm *MySQLMux) Mux(ctx *fasthttp.RequestCtx, setting *map[string]string, routes *map[string]Route, urlDictio *map[string]map[string]string) {
 	var ctrl Controller
 	var foundRoute []string
 	var idx int
@@ -22,6 +26,8 @@ func (bm *BaseMux) Mux(ctx *fasthttp.RequestCtx, setting *map[string]string, rou
 	var params map[string]string
 	var tree map[string]Route
 
+	// Store Database connection.
+	ctx.SetUserValue("dbConn", bm.DbConn)
 	//	// Store Session connection.
 	//	ctx.SetUserValue("session", bm.Session)
 
@@ -146,4 +152,5 @@ Loop2:
 		ctx.SetStatusCode(fasthttp.StatusOK)
 		ctrl.Handler(ctx, bm.Session)
 	}
+	defer bm.DbConn.Close()
 }

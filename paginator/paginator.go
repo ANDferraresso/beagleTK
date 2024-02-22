@@ -18,7 +18,7 @@ func (p *Paginator) Setup() {
 }
 
 //
-func (p *Paginator) Calc(rowsNum int, rowPerPage int, page int) {
+func (p *Paginator) Calc(rowsNum int64, rowPerPage int64, page int64) {
 	if rowsNum == 0 {
 	    p.PagesNum = 0
 	    p.Page = 0
@@ -28,7 +28,7 @@ func (p *Paginator) Calc(rowsNum int, rowPerPage int, page int) {
 	    p.LastPage = 0
 	}
      
-    p.PagesNum = math.Floor(rowsNum / rowPerPage)
+    p.PagesNum = int64(math.Floor(float64(rowsNum) / float64(rowPerPage)))
     if rowsNum % rowPerPage > 0 {
         p.PagesNum++
     }
@@ -54,15 +54,14 @@ func (p *Paginator) Calc(rowsNum int, rowPerPage int, page int) {
 }
 
 //
-func (p *Paginator) PagHTML(rowsNum int, rowPerPage int, Page int, link string, pars map[string]string, 
+func (p *Paginator) PagHTML(link string, pars map[string]string, 
 	showPageMode string, classes string) string {
 	//
-	p.Calc(rowsNum, rowPerPage, page)
 	var html strings.Builder
     var querys string = "?" 
 
     for k, v := range pars {
-    	querys .= k + "=" + v + "&"
+    	querys += k + "=" + v + "&"
     }
             
     if querys == "?" {
@@ -71,7 +70,7 @@ func (p *Paginator) PagHTML(rowsNum int, rowPerPage int, Page int, link string, 
     	querys = string([]rune(querys)[0:utf8.RuneCountInString(querys)-1])
     }
 
-    if len(classes) {
+    if len(classes) == 0 {
         html.WriteString("<nav aria-label=\"...\"><ul class=\"pagination\">")
     } else {
         html.WriteString("<nav aria-label=\"...\"><ul class=\"pagination ")
@@ -82,36 +81,37 @@ func (p *Paginator) PagHTML(rowsNum int, rowPerPage int, Page int, link string, 
     if p.FirstPage != p.PrevPage {
         if showPageMode == "U" {
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.FirstPage))
+            html.WriteString(strconv.FormatInt(p.FirstPage, 10))
             html.WriteString("\"><a class=\"page-link\" href=\"")
             html.WriteString(link)
-            html.WriteString(strconv.Itoa(p.FirstPage))
+            html.WriteString(strconv.FormatInt(p.FirstPage, 10))
             html.WriteString(querys)
             html.WriteString("\">")
-            html.WriteString(strconv.Itoa(p.FirstPage))
+            html.WriteString(strconv.FormatInt(p.FirstPage, 10))
             html.WriteString("</a></li>")
         } else if showPageMode == "Q" {
-            var q string = 0
-            if mb_strlen(querys) == 0 {
-            	q = "?Page=" + strconv.Itoa(p.FirstPage)
+            var q string = "0"
+            if len([]rune(querys)) == 0 {
+            	q = "?page=" + strconv.FormatInt(p.FirstPage, 10)
             } else {
-            	q = "?Page=" + strconv.Itoa(p.FirstPage) + "&" + string([]rune(querys)[1:])
+            	q = "?page=" + strconv.FormatInt(p.FirstPage, 10) + "&" + string([]rune(querys)[1:])
             }
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.FirstPage))
+            html.WriteString(strconv.FormatInt(p.FirstPage, 10))
             html.WriteString("\"><a class=\"page-link\" href=\"")
             html.WriteString(link)
             html.WriteString(q)
             html.WriteString("\">")
-            html.WriteString(strconv.Itoa(p.FirstPage))
+            html.WriteString(strconv.FormatInt(p.FirstPage, 10))
             html.WriteString("</a></li>")
         }  else {
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.FirstPage))
+            html.WriteString(strconv.FormatInt(p.FirstPage, 10))
             html.WriteString("\"><a class=\"page-link\" href=\"")
-            html.WriteString(link.querys)
+            html.WriteString(link)
+            html.WriteString(querys)
             html.WriteString("\">")
-            html.WriteString(strconv.Itoa(p.FirstPage))
+            html.WriteString(strconv.FormatInt(p.FirstPage, 10))
             html.WriteString("</a></li>")
         }
     }
@@ -119,28 +119,28 @@ func (p *Paginator) PagHTML(rowsNum int, rowPerPage int, Page int, link string, 
     if p.PrevPage - p.FirstPage > 1 {
         if showPageMode == "U" {
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.PrevPage - 1))
+            html.WriteString(strconv.FormatInt(p.PrevPage - 1, 10))
             html.WriteString("\"><a class=\"page-link\" href=\"")
             html.WriteString(link)
-            html.WriteString(strconv.Itoa(p.PrevPage - 1))
+            html.WriteString(strconv.FormatInt(p.PrevPage - 1, 10))
             html.WriteString(querys)
             html.WriteString("\">&#8592;</a></li>")
         } else if showPageMode == "Q" {
-            var q string = 0
-            if mb_strlen(querys) == 0 {
-            	q = "?Page=" + strconv.Itoa(p.PrevPage - 1)
+            var q string = "0"
+            if len([]rune(querys)) == 0 {
+            	q = "?page=" + strconv.FormatInt(p.PrevPage - 1, 10)
             } else {
-            	q = "?Page=" + strconv.Itoa(p.PrevPage - 1) + "&" + string([]rune(querys)[1:])
+            	q = "?page=" + strconv.FormatInt(p.PrevPage - 1, 10) + "&" + string([]rune(querys)[1:])
             }
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            	html.WriteString(strconv.Itoa(p.PrevPage - 1))
+            	html.WriteString(strconv.FormatInt(p.PrevPage - 1, 10))
             	html.WriteString("\"><a class=\"page-link\" href=\"")
             	html.WriteString(link)
             	html.WriteString(q)
             	html.WriteString("\">&#8592;</a></li>")
         } else {
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.PrevPage - 1))
+            html.WriteString(strconv.FormatInt(p.PrevPage - 1, 10))
             html.WriteString("\"><a class=\"page-link\" href=\"")
             html.WriteString(link)
             html.WriteString(querys)
@@ -151,79 +151,79 @@ func (p *Paginator) PagHTML(rowsNum int, rowPerPage int, Page int, link string, 
     if p.PrevPage != p.Page {
         if showPageMode == "U" {
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.PrevPage))
+            html.WriteString(strconv.FormatInt(p.PrevPage, 10))
             html.WriteString("\"><a class=\"page-link\" href=\"")
             html.WriteString(link)
-            html.WriteString(strconv.Itoa(p.PrevPage))
+            html.WriteString(strconv.FormatInt(p.PrevPage, 10))
             html.WriteString(querys)
             html.WriteString("\">")
-            html.WriteString(strconv.Itoa(p.PrevPage))
+            html.WriteString(strconv.FormatInt(p.PrevPage, 10))
             html.WriteString("</a></li>")
         } else if showPageMode == "Q" {
-            var q string = 0
-            if mb_strlen(querys) == 0 {
-            	q = "?Page=" + strconv.Itoa(p.PrevPage)
+            var q string = "0"
+            if len([]rune(querys)) == 0 {
+            	q = "?page=" + strconv.FormatInt(p.PrevPage, 10)
             } else {
-            	q = "?Page=" + strconv.Itoa(p.PrevPage) + "&" + string([]rune(querys)[1:])
+            	q = "?page=" + strconv.FormatInt(p.PrevPage, 10) + "&" + string([]rune(querys)[1:])
             }
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.PrevPage))
+            html.WriteString(strconv.FormatInt(p.PrevPage, 10))
             html.WriteString("\"><a class=\"page-link\" href=\"")
             html.WriteString(link)
             html.WriteString(q)
             html.WriteString("\">")
-            html.WriteString(strconv.Itoa(p.PrevPage))
+            html.WriteString(strconv.FormatInt(p.PrevPage, 10))
             html.WriteString("</a></li>")
         } else {
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.PrevPage))
+            html.WriteString(strconv.FormatInt(p.PrevPage, 10))
             html.WriteString("\"><a class=\"page-link\" href=\"")
             html.WriteString(link)
             html.WriteString(querys)
             html.WriteString("\">")
-            html.WriteString(strconv.Itoa(p.PrevPage))
+            html.WriteString(strconv.FormatInt(p.PrevPage, 10))
             html.WriteString("</a></li>")
         }
     }
 
     html.WriteString("<li class=\"page-item active\"><a class=\"page-link\" href=\"javascript:void(0);\">")
-    html.WriteString(p.Page)
+    html.WriteString(strconv.FormatInt(p.Page, 10))
     html.WriteString("</a></li>")
 
     if p.NextPage != p.Page {
         if showPageMode == "U" {
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.NextPage))
+            html.WriteString(strconv.FormatInt(p.NextPage, 10))
             html.WriteString("\"><a class=\"page-link\" href=\"")
             html.WriteString(link)
-            html.WriteString(strconv.Itoa(p.NextPage))
+            html.WriteString(strconv.FormatInt(p.NextPage, 10))
             html.WriteString(querys)
             html.WriteString("\">")
-            html.WriteString(strconv.Itoa(p.NextPage))
+            html.WriteString(strconv.FormatInt(p.NextPage, 10))
             html.WriteString("</a></li>")
         } else if showPageMode == "Q" {
-            var q string = 0
-            if mb_strlen(querys) == 0 {
-            	q = "?Page=".p.NextPage
+            var q string = "0"
+            if len([]rune(querys)) == 0 {
+            	q = "?page=" + strconv.FormatInt(p.NextPage, 10)
             } else {
-            	q = "?Page=".p.NextPage."&".mb_substr(querys, 1, mb_strlen(querys))
+            	q = "?page=" + strconv.FormatInt(p.NextPage, 10) + "&" + string([]rune(querys)[1:])
             }
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.NextPage))
+            html.WriteString(strconv.FormatInt(p.NextPage, 10))
             html.WriteString("\"><a class=\"page-link\" href=\"")
             html.WriteString(link)
             html.WriteString(q)
             html.WriteString("\">")
-            html.WriteString(strconv.Itoa(p.NextPage))
+            html.WriteString(strconv.FormatInt(p.NextPage, 10))
             html.WriteString("</a></li>")
         } else {
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.NextPage))
+            html.WriteString(strconv.FormatInt(p.NextPage, 10))
             html.WriteString("\"><a class=\"page-link\" href=\"")
             html.WriteString(link)
             html.WriteString(querys)
             html.WriteString("\">")
-            html.WriteString(strconv.Itoa(p.NextPage))
+            html.WriteString(strconv.FormatInt(p.NextPage, 10))
             html.WriteString("</a></li>")
         }
     }
@@ -231,28 +231,28 @@ func (p *Paginator) PagHTML(rowsNum int, rowPerPage int, Page int, link string, 
     if p.LastPage - p.NextPage > 1 {
         if showPageMode == "U" {
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.NextPage + 1))
+            html.WriteString(strconv.FormatInt(p.NextPage + 1, 10))
             html.WriteString("\"><a class=\"page-link\" href=\"")
             html.WriteString(link)
-            html.WriteString(strconv.Itoa(p.NextPage + 1))
+            html.WriteString(strconv.FormatInt(p.NextPage + 1, 10))
             html.WriteString(querys)
             html.WriteString("\">&#8594;</a></li>")
         } else if showPageMode == "Q" {
-            var q string = 0
-            if mb_strlen(querys) == 0 {
-            	q = "?Page=" + strconv.Itoa(p.NextPage + 1)
+            var q string = "0"
+            if len([]rune(querys)) == 0 {
+            	q = "?page=" + strconv.FormatInt(p.NextPage + 1, 10)
             } else {
-            	q = "?Page=" + strconv.Itoa( p.NextPage + 1) + "&" + string([]rune(querys)[1:])
+            	q = "?page=" + strconv.FormatInt(p.NextPage + 1, 10) + "&" + string([]rune(querys)[1:])
             }
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.NextPage + 1))
-            html.WriteString("\"><a class=\"page-link\" href="')
+            html.WriteString(strconv.FormatInt(p.NextPage + 1, 10))
+            html.WriteString("\"><a class=\"page-link\" href=\"")
             html.WriteString(link)
             html.WriteString(q)
             html.WriteString("\">&#8594;</a></li>")
         } else {
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.NextPage + 1))
+            html.WriteString(strconv.FormatInt(p.NextPage + 1, 10))
             html.WriteString("\"><a class=\"page-link\" href=\"")
             html.WriteString(link)
             html.WriteString(querys)
@@ -263,37 +263,37 @@ func (p *Paginator) PagHTML(rowsNum int, rowPerPage int, Page int, link string, 
     if p.LastPage != p.NextPage {
         if showPageMode == "U" {
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.LastPage))
+            html.WriteString(strconv.FormatInt(p.LastPage, 10))
             html.WriteString("\"><a class=\"page-link\" href=\"")
             html.WriteString(link)
-            html.WriteString(strconv.Itoa(p.LastPage))
+            html.WriteString(strconv.FormatInt(p.LastPage, 10))
             html.WriteString(querys)
             html.WriteString("\">")
-            html.WriteString(strconv.Itoa(p.LastPage))
+            html.WriteString(strconv.FormatInt(p.LastPage, 10))
             html.WriteString("</a></li>")
         } else if showPageMode == "Q" {
-            var q string = 0
-            if mb_strlen(querys) == 0 {
-            	q = "?Page=" + strconv.Itoa(p.LastPage)
+            var q string = "0"
+            if len([]rune(querys)) == 0 {
+            	q = "?page=" + strconv.FormatInt(p.LastPage, 10)
             } else { 
-            	q = "?Page=" + strconv.Itoa(p.LastPage) + "&" + string([]rune(querys)[1:])
+            	q = "?page=" + strconv.FormatInt(p.LastPage, 10) + "&" + string([]rune(querys)[1:])
             }
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.LastPage))
+            html.WriteString(strconv.FormatInt(p.LastPage, 10))
             html.WriteString("\"><a class=\"page-link\" href=\"")
             html.WriteString(link)
             html.WriteString(q)
             html.WriteString("\">")
-            html.WriteString(strconv.Itoa(p.LastPage))
+            html.WriteString(strconv.FormatInt(p.LastPage, 10))
             html.WriteString("</a></li>")
         } else {
             html.WriteString("<li class=\"page-item\" id=\"pag-item-")
-            html.WriteString(strconv.Itoa(p.LastPage))
+            html.WriteString(strconv.FormatInt(p.LastPage, 10))
             html.WriteString("\"><a class=\"page-link\" href=\"")
             html.WriteString(link)
             html.WriteString(querys)
             html.WriteString("\">")
-            html.WriteString(strconv.Itoa(p.LastPage))
+            html.WriteString(strconv.FormatInt(p.LastPage, 10))
             html.WriteString("</a></li>")
         }
     }

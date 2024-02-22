@@ -27,7 +27,7 @@ type Form struct {
 	Required     []string
 	DontValidate []string
 	FieldsOrder  []string
-	Fields       map[string]*Field
-	UIs          map[string]*UI
+	Fields       map[string]Field
+	UIs          map[string]UI
 	Validator    validator.Validator
 }

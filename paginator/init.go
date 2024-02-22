@@ -4,10 +4,10 @@ import (
 )
 
 type Paginator struct {
-	PagesNum  int
-	Page      int
-	FirstPage int
-	PrevPage  int
-	NextPage  int
-	LastPage  int
+	PagesNum  int64
+	Page      int64
+	FirstPage int64
+	PrevPage  int64
+	NextPage  int64
+	LastPage  int64
 }

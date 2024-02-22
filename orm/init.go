@@ -59,10 +59,15 @@ type Dictio struct {
 
 type TableTab struct {
 	T             *Dictio
+	ColumnKeys    []string
+	FKeys         map[string]FKeys
 	Data          []RowValues
 	HasData       bool
 	CsrfToken     string
 	FormHasErrors bool
+	Filtered      bool
+	RowsNum       int64
+	Strs          map[string]string
 }
 
 type DbRes struct {
