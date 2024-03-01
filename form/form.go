@@ -16,9 +16,9 @@ func (form *Form) SetupForm() {
 	form.Validator.SetupValidator()
 }
 
-func (form *Form) AddField(fd Field) {
+func (form *Form) AddField(fd *Field) {
 	form.FieldsOrder = append(form.FieldsOrder, fd.Name)
-	form.Fields[fd.Name] = &fd
+	form.Fields[fd.Name] = fd
 	form.UIs[fd.Name] = &UI{
 		Attrs:      make(map[string]string),
 		Default:    "",
