@@ -118,7 +118,6 @@ func (table *Table) Select(dbConn *sql.DB, debug string, countRows bool, extRefs
 		}
 
 		values = append(values, cs.Binds...)
-		fmt.Println("cs.Binds:", cs.Binds)
 	} else {
 		// extRefs = true
 		//
@@ -254,8 +253,6 @@ func (table *Table) Select(dbConn *sql.DB, debug string, countRows bool, extRefs
 		if err != nil {
 			return ManageDbmsError(&dbRes, debug, err, query.String())
 		} else {
-
-	     	fmt.Println(query.String(), values)
 			// Ottieni tipo di dati delle colonne (columnTypes)
 			// columnType.Name() nome colonna
 			// columnType.DatabaseTypeName() tipo di data (database)
@@ -374,7 +371,6 @@ func (table *Table) Update(dbConn *sql.DB, debug string, ps *map[string]interfac
 	values = append(values, cs.Binds...)
 
 	// Lancia query
-	fmt.Println(query.String(), values)
 	res, err := dbConn.Exec(query.String(), values...)
 	if err != nil {
 		return ManageDbmsError(&dbRes, debug, err, query.String())
