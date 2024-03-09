@@ -48,7 +48,7 @@ func (form *Form) ImportTable(table *orm.Table, tableT *orm.Dictio, extRefs bool
 	            Widget:     "",
 	            WsUrl:      "",
 	            WsCallback: "",
-	            Opts:       make(map[string]string),
+	            Opts:       make([]map[string]string),
 	        }
 	    }
 
