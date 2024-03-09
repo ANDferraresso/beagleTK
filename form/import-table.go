@@ -17,22 +17,40 @@ func (form *Form) ImportTable(table *orm.Table, tableT *orm.Dictio, extRefs bool
     form.Name = table.Name
     form.Prefix = prefix
     for _, v := range columns {
-        form.FieldsOrder = append(form.FieldsOrder, v)
-        form.Fields[v] = &Field{
-            Name:      v,
-            Title:     tableT.Title[v],
-            MinLength: table.Columns[v].MinLength,
-            MaxLength: table.Columns[v].MaxLength,
-            Checks:    table.Columns[v].Checks,
-        }
-        form.UIs[v] = &UI{
-            Attrs:      make(map[string]string),
-            Default:    "",
-            Widget:     "",
-            WsUrl:      "",
-            WsCallback: "",
-            Opts:       tableT.Opts[v],
-        }
+    	form.FieldsOrder = append(form.FieldsOrder, v)
+    	if tableT != nil {
+	        form.Fields[v] = &Field{
+	            Name:      v,
+	            Title:     tableT.Title[v],
+	            MinLength: table.Columns[v].MinLength,
+	            MaxLength: table.Columns[v].MaxLength,
+	            Checks:    table.Columns[v].Checks,
+	        }
+	        form.UIs[v] = &UI{
+	            Attrs:      make(map[string]string),
+	            Default:    "",
+	            Widget:     "",
+	            WsUrl:      "",
+	            WsCallback: "",
+	            Opts:       tableT.Opts[v],
+	        }
+	    } else {
+	        form.Fields[v] = &Field{
+	            Name:      v,
+	            Title:     "",
+	            MinLength: table.Columns[v].MinLength,
+	            MaxLength: table.Columns[v].MaxLength,
+	            Checks:    table.Columns[v].Checks,
+	        }
+	        form.UIs[v] = &UI{
+	            Attrs:      make(map[string]string),
+	            Default:    "",
+	            Widget:     "",
+	            WsUrl:      "",
+	            WsCallback: "",
+	            Opts:       map[string][]map[string]string{},
+	        }
+	    }
 
         // default
         /*
